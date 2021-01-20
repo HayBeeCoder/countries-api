@@ -1,13 +1,10 @@
-// import conf from '../images/conf.jpg'
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CountryProperty from '../components/countryProp'
 import BorderCountry from "../components/borderCountry"
 
 function FullCountry({country,onButtonClick,countries,onBorderClick}){
-    console.log(countries)
-    // const border = ['France','America']
-    console.log(country)
-    function handleButtonClick(){
+     function handleButtonClick(){
         onButtonClick()
     }
     function formatNumber(number){
@@ -20,35 +17,17 @@ function FullCountry({country,onButtonClick,countries,onBorderClick}){
         }
         return  number + newNumber;
     }
-// ==============
-    function fullBordersInfo(border){
-         console.log(countries)
-
-    // return border  + 'ososopd';
-        // console.log(border)
-         let fullBorder;
+   function fullBordersInfo(border){
+      let fullBorder;
           for(let country of countries){
                  if(country["alpha3Code"] === border){
-                     console.log(border)
                  fullBorder =   <BorderCountry info={country} onBorderClick={onBorderClick} id={country.id} name={country.name}/>
                 break;
                  }
           }
           return fullBorder;
-        // return fullBorders;
     }
-      
-        //  countries.forEach((country,index) => {
-        //     //   country from parameter is an object with an id and actual country property 
-        //     //   country = country[1];
-        //     // info prop is redundant here 
-        //         if(country["alpha3Code"] === border) { 
-        //             console.log('hello')
-        //             return <BorderCountry info={country} onBorderClick={onBorderClick} id={country.id} name={country.name}/>}
-        //         // [border,borderArray];
-        //     })
-
-    // ====================
+ 
     return (
          <section className="fixed overflow-y-scroll w-full top-0 bottom-0 bg-gray-50 dark:bg-blueGray-750 z-40 py-28">
              <div className="w-11/12 mx-auto">
@@ -66,11 +45,11 @@ function FullCountry({country,onButtonClick,countries,onBorderClick}){
                     <h1 className="text-lg font-extrabold mt-0 mb-3">{country.name}</h1>
                     <ul className="flex flex-col gap-6 md:flex-row">
                         <div>
-                            <CountryProperty prop="Native Name" value={country.nativeName}/>
-                            <CountryProperty prop="Population" value={formatNumber(country.population)}/>
-                            <CountryProperty prop="Region" value={country.region}/>
-                            <CountryProperty prop="Sub Region" value={country.subregion}/>
-                            <CountryProperty prop="Capital" value={country.capital}/>
+                            <CountryProperty prop="Native Name" value={country.nativeName || 'nil;('}/>
+                            <CountryProperty prop="Population" value={formatNumber(country.population) || 'nil;('}/>
+                            <CountryProperty prop="Region" value={country.region || 'nil;('}/>
+                            <CountryProperty prop="Sub Region" value={country.subregion || 'nil;('}/>
+                            <CountryProperty prop="Capital" value={country.capital || 'nil;('}/>
                         </div>
                         <div>
                             <CountryProperty prop="Top Level Domain" value={country.topLevelDomain.join(',')}/>
@@ -78,7 +57,6 @@ function FullCountry({country,onButtonClick,countries,onBorderClick}){
                             <CountryProperty prop="Languages" value={country.languages.map(c => c.name).join(',')}/>
                         </div>
                     </ul>
-                     {/* <CountryProperty prop="BorderCountries" value={country.borders.length ? country.borders.map(b => <BorderCountry name={b}/>) : 'NO COUNTRIES FOUND;('}/>  */}
                      <CountryProperty prop="BorderCountries" value={country.borders.length ? country.borders.map(fullBordersInfo): 'NO COUNTRIES FOUND;('}  onBorderClick={onBorderClick}/> 
                 </div>
             </div>

@@ -4,11 +4,6 @@ function Country(props){
 
     function handleCountryClick(e){
         props.onClick(props.id)
-        // props.countries.for
-        // console.log(props.key)
-        //  e.currentTarget.style.background = 'green';
-        // e.currentTarget.style.opacity = '1';
-
     }
     function formatNumber(number){
         number = String(number);
@@ -22,7 +17,7 @@ function Country(props){
     }
     return (
         <div className=" bg-white dark:bg-blue-750 shadow-md rounded-md overflow-hidden cursor-pointer" onClick={handleCountryClick}>
-            <div className='relative h-36 w-full'>
+            <div className='relative h-40 w-full'>
                 <img src={props.flag} alt={props.name + "'s flag"} className="inline-block absolute h-full w-full top-0 left-0 object-cover"/>
             </div>
             <article className="p-5">

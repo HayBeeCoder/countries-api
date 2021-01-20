@@ -1,21 +1,16 @@
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-function SearchBox({onSubmit}){
+function SearchBox({onSubmit,clearSearch,setClearSearch}){
     const [country,setCountry] = useState('')
-    //  const [country, setCountry]=useState('');
     function handleInput(e){
-         setCountry(e.target.value)
+        setCountry(e.target.value)
+           onSubmit(e.target.value)
     }
-    function handleSubmit(e){
-        e.preventDefault();
-         onSubmit(country);
-        setCountry("")
-    }
-
+  
     return (
-        <form className='dark:bg-blue-750 bg-white shadow-md rounded-sm overflow-hidden w-full px-4 flex items-center justify-center' onSubmit={handleSubmit}>
+        <form className='dark:bg-blue-750 bg-white shadow-md rounded-sm overflow-hidden w-full px-4 flex items-center justify-center' >
             {/* set line height to normal to let text inside a label/p tag align vertically */}
         <label htmlFor="new-search" className="h-auto mx-5 text-center inline-block leading-normal">
         <FontAwesomeIcon icon={['fas', 'search']} size='xs' />  
@@ -26,6 +21,7 @@ function SearchBox({onSubmit}){
       placeholder= 'Search for a country...'
       className='p-2 m-1 flex-grow text-sm leading-normal  bg-transparent outline-none'
       tabIndex='5'
+      value= {country}
       onChange={handleInput}
     />
     </form>

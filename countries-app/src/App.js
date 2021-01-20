@@ -8,63 +8,63 @@ import { nanoid } from "nanoid";
 
 
 const FILTER_MAP =  {
-  ['']: ()=>true,
+  All: ()=>true,
   Africa: country => country.region == 'Africa',
   America : country => country.region == 'Americas',
   Asia: country => country.region == 'Asia',
   Europe: country => country.region == 'Europe',
   Oceania: country => country.region == 'Oceania',
+  Polar: country => country.region == 'Polar',
+
 }
 
-// const FILTER_COUNTRIES = Object.keys(FILTER_MAP)
-
-function App(props) {
+function App() {
+  const baseURL = 'https://restcountries.eu/rest/v2/';
+  
+  const [clearSearch,setClearSearch] = useState(false)
   const [countryOpen,setCountryOpen] = useState(false)
    const [fullcountry,setCountry] = useState(null)
-  const [filter,setFilter] = useState('')
+  const [filter,setFilter] = useState('All')
   const [ dark, setState]= useState(false);
   const [isLoading,setLoading]= useState(true);
-  // const [,set]
-   const baseURL = 'https://restcountries.eu/rest/v2/';
-   const [countries,setCountries] = useState([])
+  const [searchedCountry,setSearchCountry] = useState({name: ''})
+    const [countries,setCountries] = useState([])
    const [fixed_countries,setFixedCountries] = useState([])
-  var countryList = countries.filter(FILTER_MAP[filter]).map((country,index) => <Country  name={country.name} region={country.region} capital={country.capital} flag={country.flag} population={country.population} key={index} onClick={showFullCountry} id={country.id}/>);
+  var countryList = countries.filter(FILTER_MAP[filter]).filter(c => new RegExp('^'+searchedCountry.name,'i').test(c.name)).map((country,index) => <Country  name={country.name} region={country.region} capital={country.capital || 'No Capital!;('} flag={country.flag} population={country.population} key={index} onClick={showFullCountry} id={country.id}/>);
   function showFullCountry(id){
-     console.log(id)
-    const country = fixed_countries.filter(country => country.id == id );
+    const country = countries.filter(country => country.id == id );
     setCountry(country[0])
     setCountryOpen(true)
-    console.log(country[0])
   }
   function toggleTheme(state){
     setState(state)
   }
   function filterCountries(filter){
-    // alert(filter)
     setFilter(filter);
+    setCountries(fixed_countries)
+    setClearSearch(true)
   }
   function onSubmit(country){
-    setLoading(true);
-    if(country === '') fetchCountry('all');
-    else fetchCountry(`name/${country}`)
-  }
-
-  function fetchCountry(country){
-    fetch(baseURL+country)
-    .then(response => response.json())
-    .then(res =>{
-      setFilter('');
-      setCountries(res.map(country => {
-        return  {...country, id: 'country-' + nanoid()}
-        }));
-      setLoading(false)
+  const searched_Country = fixed_countries.filter(c => c.name.match(new RegExp('^'+country,'i')))
+  if(searched_Country.length !== 0){
+    setCountries(searched_Country)
+    setSearchCountry({
+      name: country,
+      exists:true
+    })
+  }else{
+    setCountries([])
+    setSearchCountry({
+      name: country,
+      exists:false
     })
   }
+}
+
   useEffect(()=>{
     fetch(baseURL + 'all')
     .then(response => response.json())
     .then(res =>{
-      console.log(res)
       const countriesWithId = res.map(country => {
         return  {...country, id: 'country-' + nanoid()}
         });
@@ -78,9 +78,9 @@ function App(props) {
     setCountryOpen(false)
   }
 
-  // function onBorderClick(){
-
-  // }
+  function updateClearSearch(){
+    setClearSearch(false)
+  }
 
   useEffect(()=>{
     if(countryOpen) document.body.style.overflow = 'hidden';
@@ -96,13 +96,15 @@ function App(props) {
         <Toggle toggleTheme={toggleTheme} light={dark}/>
       </header>
      <main className='justify-self-stretch pt-28'>
-        <div className='px-4 pt-9 pb-12 flex flex-col justify-between items-start gap-7 h-full'>
-          <SearchBox onSubmit={onSubmit}/>
-          <Filter onFilter={filterCountries}/>
-        </div>
+       {!isLoading && ( <div className='px-4 pt-9 pb-12 flex flex-col justify-between items-start gap-7 h-full lg:flex-row '>
+          <SearchBox onSubmit={onSubmit} clearSearch={clearSearch} setClearSearch={updateClearSearch}/>
+          <Filter onFilter={filterCountries} currentFilter={filter}/>
+        </div>)}
         <div className="w-11/12 max-w-md mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:max-w-none gap-6">
-          {isLoading ? <p className="font-semibold text-lg text-center">Loading...</p> : countryList}
-        </div>
+          {isLoading &&  <p className="font-semibold text-lg text-center">Loading...</p> }
+          {!isLoading && countryList}
+          { searchedCountry.name !== '' && !searchedCountry.exists && <p className="text-sm text-center">No country named  <span className="font-semibold"> {searchedCountry.name.toUpperCase()} </span>is found { filter !== 'All' && <span className="font-semibold ">in {filter.toUpperCase()}</span>}</p> }
+        </div> 
      </main>
      </div>
     </div>

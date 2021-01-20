@@ -1,9 +1,7 @@
-// import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 function Toggle(props){
     function handleClick(e){
-        // setState(String(e.currentTarget.checked))
-        props.toggleTheme(e.currentTarget.checked)
+          props.toggleTheme(e.currentTarget.checked)
     }
 
     const LightMode = (
@@ -20,9 +18,9 @@ function Toggle(props){
 
     )
     return (
-        <div className='flex items-center justify-between gap-1 '>
+        <div className='flex items-center justify-between gap-1 p'>
              <input type='checkbox' id='toggle' className="hidden cursor-pointer appearance-none" onChange={handleClick} ></input>   
-            {<label htmlFor='toggle' className="text-xs font-semibold cursor-pointer inline-block" tabIndex='4'>
+            {<label htmlFor='toggle' className="py-2 pl-3 text-xs font-semibold cursor-pointer inline-block" tabIndex='4'>
                {props.light ? LightMode : DarkMode}
                </label>
            }

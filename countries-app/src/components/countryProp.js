@@ -1,4 +1,3 @@
-// import Country from "./country"
 
 function CountryProperty({prop,value}){
     return (
